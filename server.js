@@ -1,7 +1,8 @@
 const express = require("express");
+const bodyParser = require('body-parser');
 const connectDB = require("./db/db");
 require("dotenv").config();
-
+const roomRoutes = require('./route/RoomRoute');
 // Importing express module
 const app = express();
 
@@ -11,6 +12,8 @@ const PORT = process.env.PORT || 8000;
 // Middleware to parse incoming requests with JSON payloads
 app.use(express.json());
 
+app.use(bodyParser.json());
+app.use('/api', roomRoutes);
 // Connecting to the database
 connectDB();
 
