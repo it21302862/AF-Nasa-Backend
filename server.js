@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const connectDB = require("./db/db");
 require("dotenv").config();
 const roomRoutes = require('./route/RoomRoute');
+const userRoutes = require('./route/UserRoute');
 // Importing express module
 const app = express();
 
@@ -13,7 +14,8 @@ const PORT = process.env.PORT || 8000;
 app.use(express.json());
 
 app.use(bodyParser.json());
-app.use('/api', roomRoutes);
+app.use('/api/room', roomRoutes);
+app.use('/api/user', userRoutes);
 // Connecting to the database
 connectDB();
 
