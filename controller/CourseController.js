@@ -26,8 +26,8 @@ async function getCourses(req, res) {
 
     // Checking if the current user is an admin or student or faculty member
     if (
-      currentUserRole !== 0 ||
-      currentUserRole !== 1 ||
+      currentUserRole !== 0 &&
+      currentUserRole !== 1 &&
       currentUserRole !== 2
     ) {
       throw new Error(
