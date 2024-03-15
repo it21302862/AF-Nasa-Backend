@@ -1,20 +1,20 @@
-// courseRoute.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const courseController = require('../controller/CourseController');
+const {
+  createCourse,
+  getCourses,
+  assignFaculty,
+  removeFaculty,
+  updateCourse,
+  deleteCourse,
+} = require("../controller/CourseController");
+const authMiddleware = require("../middleware/UserMiddleware");
 
-router.post('/', courseController.createCourse);
-router.get('/courses', courseController.getCourses);
-router.post('/assign-faculty', courseController.assignFaculty); // Route for assigning faculty
-router.put('/:courseId/delete/:facultyId', courseController.removeFaculty);
-
-
-function checkAdmin(req, res, next) {
-  // Assuming user role is stored in req.user.role
-  if (req.user?.role !== 0) {
-    return res.status(403).json({ error: 'Only admins can access this endpoint' });
-  }
-  next();
-}
-
+// course routes
+router.post("/", authMiddleware, createCourse);
+router.get("/", authMiddleware, getCourses);
+router.post("/assign-faculty", authMiddleware, assignFaculty);
+router.put("/:courseId/:facultyId", authMiddleware, removeFaculty);
+router.delete("/:courseId", authMiddleware, deleteCourse);
+router.put("/:courseId", authMiddleware, updateCourse);
 module.exports = router;
