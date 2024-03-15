@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 
+// Defining the schema for the user collection
 const userSchema = new mongoose.Schema({
-  email: String,
-  password: String,
-  role: Number, // 0: Admin, 1: Faculty, 2: Student
-  firstName: String,
-  lastName: String,
+  email: { type: String, required: true },
+  password: { type: String, required: true },
+  role: { type: Number, required: true },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
   createdDate: { type: Date, default: Date.now },
 });
 

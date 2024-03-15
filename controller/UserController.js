@@ -1,9 +1,16 @@
-// controller.js
 const userService = require("../service/UserService");
 
+// Function to handle user registration
 async function registerUser(req, res) {
   try {
-    const currentUserRole = req.user.role;
+    // Getting the current user's role from the request object
+    const currentUserRole = req.user?.role;
+
+    // Checking if the current user is an admin
+    if (currentUserRole !== 0) {
+      throw new Error("Only admin can register new users");
+    }
+
     const userData = req.body;
     const user = await userService.registerUser(userData, currentUserRole);
     res.status(201).json(user);
@@ -12,6 +19,7 @@ async function registerUser(req, res) {
   }
 }
 
+// Function to handle user login
 async function loginUser(req, res) {
   try {
     const { email, password } = req.body;
@@ -22,13 +30,4 @@ async function loginUser(req, res) {
   }
 }
 
-async function logoutUser(req, res) {
-  try {
-    // No action needed on server-side for JWT token
-    res.status(200).json({ message: 'Logout successful' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-}
-
-module.exports = { registerUser, loginUser, logoutUser  };
+module.exports = { registerUser, loginUser };

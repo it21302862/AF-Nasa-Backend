@@ -12,9 +12,9 @@ async function createCourse(courseData) {
 
 async function getCourses(currentUserRole) {
   try {
-    if (currentUserRole !== 0) {
-        throw new Error('Only admin can register new users');
-      }
+    // if (currentUserRole !== 0) {
+    //     throw new Error('Only admin can register new users');
+    //   }
     const courses = await Course.find().populate('faculties', 'firstName lastName');
     return courses;
   } catch (error) {
@@ -32,13 +32,18 @@ async function assignFaculty(courseId, facultyId) { // Change facultyIds to facu
 }
 
 async function removeFaculty(courseId, facultyId) {
-    try {
-      const course = await Course.findByIdAndUpdate(courseId, { $pull: { faculties: { _id: facultyId } } }, { new: true });
+  try {
+      const course = await Course.findByIdAndUpdate(
+          courseId,
+          { $pull: { faculties: { faculty: facultyId } } },
+          { new: true }
+      );
       return course;
-    } catch (error) {
+  } catch (error) {
       throw error;
-    }
   }
+}
+
   
 
 

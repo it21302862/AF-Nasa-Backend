@@ -3,13 +3,10 @@ const bcrypt = require("bcrypt");
 const User = require("../model/User");
 const jwt = require("jsonwebtoken");
 
-async function registerUser(userData,currentUserRole) {
+// Function to register a new user
+async function registerUser(userData, currentUserRole) {
   try {
-
-    if (currentUserRole !== 0) {
-      throw new Error('Only admin can register new users');
-    }
-
+    // Hashing the password using bcrypt
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     const user = new User({
       email: userData.email,
@@ -27,6 +24,7 @@ async function registerUser(userData,currentUserRole) {
   }
 }
 
+// Function to log in a user
 async function loginUser(email, password) {
   try {
     // Find the user by email
