@@ -1,18 +1,21 @@
 const {ClassRoom} = require("../model/ClassRoom");
 
 async function createClassRoom(classRoomData) {
-    try {
+  try {
       const classRoom = await ClassRoom.create(classRoomData);
       return classRoom;
-    } catch (error) {
+  } catch (error) {
+      if (error.code === 11000) { // Duplicate key error
+          throw new Error("Classroom code already exists. Please choose a different code.");
+      }
       throw error;
-    }
   }
+}
+
 
   async function getClassRooms() {
     try {
       const classRoom = await ClassRoom.find().populate(
-        "bookedDates",
         "code capacity"
       );
       return classRoom;
