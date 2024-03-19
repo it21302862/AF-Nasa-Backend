@@ -5,6 +5,7 @@ require("dotenv").config();
 const classRoomRoutes = require("./route/ClassRoomRoute");
 const userRoutes = require("./route/UserRoute");
 const courseRoutes = require("./route/CourseRoute");
+const sessionRoute = require("./route/sessionRoute");
 // Importing express module
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(bodyParser.json());
 app.use("/api/classroom", classRoomRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/course", courseRoutes);
+app.use("/api/session", sessionRoute);
 // Connecting to the database
 connectDB();
 
