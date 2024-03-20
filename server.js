@@ -7,6 +7,7 @@ const userRoutes = require("./route/UserRoute");
 const courseRoutes = require("./route/CourseRoute");
 const sessionRoute = require("./route/sessionRoute");
 const timetableRoute = require("./route/timetableRoute");
+const studentEnrollmentRoute = require("./route/studentEnrollmentRoute");
 // Importing express module
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/session", sessionRoute);
 app.use("/api/timetable", timetableRoute);
+app.use("/api/enrollment", studentEnrollmentRoute);
 // Connecting to the database
 connectDB();
 
