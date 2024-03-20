@@ -2,9 +2,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const connectDB = require("./db/db");
 require("dotenv").config();
-const roomRoutes = require("./route/RoomRoute");
+const classRoomRoutes = require("./route/ClassRoomRoute");
 const userRoutes = require("./route/UserRoute");
 const courseRoutes = require("./route/CourseRoute");
+const sessionRoute = require("./route/sessionRoute");
+const timetableRoute = require("./route/timetableRoute");
 // Importing express module
 const app = express();
 
@@ -15,9 +17,11 @@ const PORT = process.env.PORT || 8000;
 app.use(express.json());
 
 app.use(bodyParser.json());
-app.use("/api/room", roomRoutes);
+app.use("/api/classroom", classRoomRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/course", courseRoutes);
+app.use("/api/session", sessionRoute);
+app.use("/api/timetable", timetableRoute);
 // Connecting to the database
 connectDB();
 
