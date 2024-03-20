@@ -25,13 +25,35 @@ const addSessionToTimetable = async (req, res, next) => {
 };
 
 const getCourseTimetable = async (req, res, next) => {
-    try {
-        const courseId = req.params.courseId;
-        const courseTimetable = await timeTableService.getCourseTimetable(courseId);
-        res.status(200).json(courseTimetable);
-    } catch (error) {
-        next(error);
-    }
+  try {
+    const courseId = req.params.courseId;
+    const courseTimetable = await timeTableService.getCourseTimetable(courseId);
+    res.status(200).json(courseTimetable);
+  } catch (error) {
+    next(error);
+  }
 };
 
-module.exports = { createTimetable, addSessionToTimetable, getCourseTimetable };
+const removeSessionFromtimetable = async (req, res, next) => {
+  try {
+    const { timetableId, sessionId } = req.params;
+
+    const updatedTimetable = await timeTableService.removeSessionFromtimetable(
+      timetableId,
+      sessionId
+    );
+
+    res
+      .status(200)
+      .json([updatedTimetable, "Remove session from timetable successfully"]);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  createTimetable,
+  addSessionToTimetable,
+  getCourseTimetable,
+  removeSessionFromtimetable,
+};

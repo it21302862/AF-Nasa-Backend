@@ -62,14 +62,13 @@ const getCourseTimetable = async (courseId) => {
           select: "dayOfWeek startTime endTime", // Include only dayOfWeek field
           populate: {
             path: "classRoomId", // Populate the classRoomId field
-            select: "code capacity" // Include name and capacity fields for the classRoom
-          }
+            select: "code", // Include name and capacity fields for the classRoom
+          },
         },
         {
           path: "faculty",
           select: "firstName lastName", // Include only firstName field
         },
-        
       ],
     });
 
@@ -86,4 +85,38 @@ const getCourseTimetable = async (courseId) => {
   }
 };
 
-module.exports = { createTimetable, addSessionToTimetable, getCourseTimetable };
+const removeSessionFromtimetable = async (timetableId,sessionId) => {
+  try {
+    const timetable = await Timetable.findById(timetableId);
+
+    if (!timetable) {
+      throw new Error("Timetable not found");
+    }
+
+    // remove the session from the
+    // Find the index of the session with the given sessionId
+    const index = timetable.sessions.findIndex(sessionObj => sessionObj.session.toString() === sessionId);
+
+    if (index === -1) {
+      throw new Error("Session not found in timetable");
+    }
+
+    timetable.sessions.splice(index, 1);
+
+    // update isBooked filed to false for session
+    await Session.findByIdAndUpdate(sessionId, { isBooked: false });
+
+    // save updated time table
+    await timetable.save();
+    return timetable;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = {
+  createTimetable,
+  addSessionToTimetable,
+  getCourseTimetable,
+  removeSessionFromtimetable,
+};
