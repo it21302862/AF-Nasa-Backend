@@ -1,6 +1,7 @@
 const Timetable = require("../model/timetableModel");
 const Session = require("../model/sessionModel");
 const Course = require("../model/Course");
+const Notification = require("../model/notificationModel");
 
 const createTimetable = async (timetableData) => {
   try {
@@ -49,9 +50,7 @@ const addSessionToTimetable = async (
      // Generate notification message
      const notificationMessage = `Timetable session added for course ${timetable.courseId}`;
 
-     // Update timetable with notification
-     timetable.notifications.push({ message: notificationMessage });
-     await timetable.save();
+     await Notification.create({ message: notificationMessage, courseId: timetable.courseId });
 
      return { timetable, notificationMessage };
   } catch (error) {
@@ -127,9 +126,9 @@ const removeSessionFromtimetable = async (timetableId,sessionId) => {
   }
 };
 
-const getTimetableNotifications = async (courseId) => {
+const getTimetableNotifications = async () => {
   try {
-      const timetable = await Timetable.findOne({ courseId });
+      const timetable = await Timetable.find({});
 
       if (!timetable) {
           throw new Error("Timetable not found for the course");

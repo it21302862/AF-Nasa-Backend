@@ -55,9 +55,9 @@ const removeSessionFromtimetable = async (req, res, next) => {
 
 const getTimetableNotifications = async (req, res, next) => {
   try {
-      const courseId = req.params.courseId;
+      // const courseId = req.params.courseId;
 
-      const notifications = await timeTableService.getTimetableNotifications(courseId);
+      const notifications = await timeTableService.getTimetableNotifications();
 
       res.status(200).json(notifications);
   } catch (error) {
