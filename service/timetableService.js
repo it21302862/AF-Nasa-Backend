@@ -1,6 +1,6 @@
 const Timetable = require("../model/timetableModel");
 const Session = require("../model/sessionModel");
-const Course = require("../model/Course");
+const Course = require("../model/courseModel");
 const Notification = require("../model/notificationModel");
 
 const createTimetable = async (timetableData) => {

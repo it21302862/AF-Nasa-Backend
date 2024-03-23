@@ -7,14 +7,18 @@ const {
   removeFaculty,
   updateCourse,
   deleteCourse,
+  getCourseById,
 } = require("../controller/CourseController");
-const authMiddleware = require("../middleware/UserMiddleware");
+const verifyToken = require("../middleware/UserMiddleware");
+const AdminAccess = require("../AccessManager/AdminAccess");
+const AllAccess = require("../AccessManager/AllAccess");
 
 // course routes
-router.post("/", authMiddleware, createCourse);
-router.get("/", authMiddleware, getCourses);
-router.post("/assign-faculty", authMiddleware, assignFaculty);
-router.put("/:courseId/:facultyId", authMiddleware, removeFaculty);
-router.delete("/:courseId", authMiddleware, deleteCourse);
-router.put("/:courseId", authMiddleware, updateCourse);
+router.post("/", verifyToken, AdminAccess, createCourse);
+router.get("/", verifyToken, AllAccess, getCourses);
+router.get("/:courseId", verifyToken, AllAccess, getCourseById);
+router.post("/assign-faculty", verifyToken, AdminAccess, assignFaculty);
+router.put("/:courseId/:facultyId", verifyToken, AdminAccess, removeFaculty);
+router.delete("/:courseId", verifyToken, AdminAccess, deleteCourse);
+router.put("/:courseId", verifyToken, AdminAccess, updateCourse);
 module.exports = router;
