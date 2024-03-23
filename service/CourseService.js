@@ -1,22 +1,29 @@
-const Course = require("../model/Course");
+const Course = require("../model/courseModel");
+const User = require("../model/UserModel");
 
 // Function to create a new course
 async function createCourse(courseData) {
   try {
+    // Check if a course with the same code already exists
+    const existingCourse = await Course.findOne({ code: courseData.code });
+    if (existingCourse) {
+      throw new Error("Course code already exists");
+    }
+
     const course = await Course.create(courseData);
-    return course;
+    return { message: "Course created successfully", course };
   } catch (error) {
     throw error;
   }
 }
 
-// Function to retrieve all courses with populated faculties
+// Function to retrieve all courses
 async function getCourses() {
   try {
-    const courses = await Course.find().populate(
-      "faculties",
-      "firstName lastName"
-    );
+    const courses = await Course.find().populate({
+      path: "faculties.faculty",
+      select: "firstName lastName position",
+    });
     return courses;
   } catch (error) {
     throw error;
@@ -34,7 +41,7 @@ async function updateCourse(courseId, updatedCourseData) {
     if (!updatedCourse) {
       throw new Error("Course not found");
     }
-    return updatedCourse;
+    return { message: "Course updated successfully", updatedCourse };
   } catch (error) {
     throw error;
   }
@@ -47,21 +54,50 @@ async function deleteCourse(courseId) {
     if (!deletedCourse) {
       throw new Error("Course not found");
     }
-    return deletedCourse;
+    return { message: "Course deleted successfully" };
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Function to retrieve details of a specific course by ID
+async function getCourseById(courseId) {
+  try {
+    const course = await Course.findById(courseId).populate({
+      path: "faculties.faculty",
+      select: "firstName lastName position",
+    });
+    if (!course) {
+      throw new Error("Course not found");
+    }
+    return course;
   } catch (error) {
     throw error;
   }
 }
 
 // Function to assign a faculty members to a course
-async function assignFaculty(courseId, facultyId) {
+async function assignFaculty(courseId, facultyId, position) {
   try {
-    const course = await Course.findByIdAndUpdate(
+    const faculty = await User.findById(facultyId);
+    if (faculty && faculty.role !== 1) {
+      throw new Error("Only Faculty member can be assigned to courses");
+    }
+
+    const course = await Course.findOne({
+      _id: courseId,
+      "faculties.faculty": facultyId,
+    });
+    if (course) {
+      throw new Error("Faculty member is already assigned to this course");
+    }
+
+    await Course.findByIdAndUpdate(
       courseId,
-      { $addToSet: { faculties: { faculty: facultyId } } },
+      { $addToSet: { faculties: { faculty: facultyId, position } } },
       { new: true }
     );
-    return course;
+    return { message: "Faculty member is assigned successfully" };
   } catch (error) {
     throw error;
   }
@@ -70,12 +106,21 @@ async function assignFaculty(courseId, facultyId) {
 // Function to remove a faculty member from a course
 async function removeFaculty(courseId, facultyId) {
   try {
-    const course = await Course.findByIdAndUpdate(
+    // Check if the faculty member exists in the course
+    const course = await Course.findOne({
+      _id: courseId,
+      "faculties.faculty": facultyId,
+    });
+    if (!course) {
+      throw new Error("Faculty member not found in the course");
+    }
+
+    await Course.findByIdAndUpdate(
       courseId,
       { $pull: { faculties: { faculty: facultyId } } },
       { new: true }
     );
-    return course;
+    return { message: "Faculty member is removed successfully" };
   } catch (error) {
     throw error;
   }
@@ -88,4 +133,5 @@ module.exports = {
   deleteCourse,
   assignFaculty,
   removeFaculty,
+  getCourseById,
 };
