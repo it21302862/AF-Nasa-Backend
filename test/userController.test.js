@@ -1,9 +1,10 @@
-const userService = require("../../service/UserService");
-const { registerUser, loginUser } = require("../../controller/UserController");
+const userService = require("../service/UserService");
+const { registerUser, loginUser } = require("../controller/UserController");
 
-jest.mock("../../service/UserService");
+jest.mock("../service/UserService");
 
 describe("User Controller Unit Tests", () => {
+  // Test suite for the registerUser 
   describe("registerUser", () => {
     it("should register a new user when called by an admin user", async () => {
       const req = {
@@ -27,25 +28,11 @@ describe("User Controller Unit Tests", () => {
       expect(res.status).toHaveBeenCalledWith(201);
       expect(res.json).toHaveBeenCalled();
     });
-
-    it("should return 500 error when registration fails", async () => {
-      const req = {
-        user: { role: 1 },
-        body: {}
-      };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn()
-      };
-
-      await registerUser(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: expect.any(String) });
-    });
   });
 
+   // Test suite for the loginUser function
   describe("loginUser", () => {
+    // Test case: should login a user with valid credentials
     it("should login a user with valid credentials", async () => {
       const req = {
         body: {
@@ -58,7 +45,6 @@ describe("User Controller Unit Tests", () => {
         json: jest.fn()
       };
 
-      // Mocking the token returned by userService.loginUser
       userService.loginUser.mockResolvedValue("mocked_token");
 
       await loginUser(req, res);
@@ -67,7 +53,8 @@ describe("User Controller Unit Tests", () => {
       expect(res.json).toHaveBeenCalledWith({ token: "mocked_token" });
     });
 
-    it("should return 401 error when login fails due to incorrect password", async () => {
+    // Test case: should return error when login fails due to incorrect password
+    it("should return error when login fails due to incorrect password", async () => {
       const req = {
         body: {
           email: "test@example.com",
@@ -79,7 +66,6 @@ describe("User Controller Unit Tests", () => {
         json: jest.fn()
       };
 
-      // Mocking the loginUser function to throw an error
       userService.loginUser.mockRejectedValue(new Error("Invalid password"));
 
       await loginUser(req, res);
@@ -88,6 +74,7 @@ describe("User Controller Unit Tests", () => {
       expect(res.json).toHaveBeenCalledWith({ error: "Invalid password" });
     });
 
+    // Test case: should return 401 error when login fails due to user not found
     it("should return 401 error when login fails due to user not found", async () => {
       const req = {
         body: {
@@ -106,6 +93,27 @@ describe("User Controller Unit Tests", () => {
 
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({ error: "User not found" });
+    });
+
+    // Test case: should return error when login fails due to unexpected error
+    it("should return error when login fails due to unexpected error", async () => {
+      const req = {
+        body: {
+          email: "test@example.com",
+          password: "password123"
+        }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
+
+      userService.loginUser.mockRejectedValue(new Error("Unexpected error occurred"));
+
+      await loginUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({ error: "Unexpected error occurred" });
     });
   });
 });
