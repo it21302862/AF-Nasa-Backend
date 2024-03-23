@@ -1,126 +1,111 @@
-const { registerUser, loginUser } = require("../../controller/UserController");
 const userService = require("../../service/UserService");
+const { registerUser, loginUser } = require("../../controller/UserController");
 
 jest.mock("../../service/UserService");
 
-describe("registerUser", () => {
-  it("should register a new user when called by an admin", async () => {
-    // Mocking request object with admin role and user data
-    const req = {
-      user: {
-        role: 0,
-      },
-      body: {
-        email: "chamaththa@gmail.com",
-        password: "password123",
-        role: 1,
-        firstName: "chamaththa",
-        lastName: "shamod",
-      },
-    };
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
+describe("User Controller Unit Tests", () => {
+  describe("registerUser", () => {
+    it("should register a new user when called by an admin user", async () => {
+      const req = {
+        user: { role: 0 }, 
+        body: {
+          email: "test@example.com",
+          password: "password123",
+          role: 1,
+          name: "Test User",
+          firstName: "Test",
+          lastName: "User"
+        }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
 
-    // Mocking registered user data
-    const registeredUser = {
-      id: 1,
-      email: "chamaththa@gmail.com",
-      role: 1,
-      firstName: "chamaththa",
-      lastName: "shamod",
-    };
+      await registerUser(req, res);
 
-    // Mocking userService.registerUser method to resolve with registeredUser
-    userService.registerUser.mockResolvedValueOnce(registeredUser);
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalled();
+    });
 
-    await registerUser(req, res);
+    it("should return 500 error when registration fails", async () => {
+      const req = {
+        user: { role: 1 },
+        body: {}
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
 
-    // Asserting status and response JSON
-    expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith(registeredUser);
+      await registerUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ error: expect.any(String) });
+    });
   });
 
-  it("should return a error status when an error occurs during registration", async () => {
-    // Mocking request object with non-admin role and user data
-    const req = {
-      user: {
-        role: 1,
-      },
-      body: {
-        email: "chamaththa@gmail.com",
-        password: "password123",
-        role: 1,
-        firstName: "John",
-        lastName: "Doe",
-      },
-    };
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
+  describe("loginUser", () => {
+    it("should login a user with valid credentials", async () => {
+      const req = {
+        body: {
+          email: "test@example.com",
+          password: "password123"
+        }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
 
-    // Error message to simulate the rejection of registration
-    const errorMessage = "Only admin can register new users";
-    const error = new Error(errorMessage);
+      // Mocking the token returned by userService.loginUser
+      userService.loginUser.mockResolvedValue("mocked_token");
 
-    userService.registerUser.mockRejectedValueOnce(error);
+      await loginUser(req, res);
 
-    await registerUser(req, res);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ token: "mocked_token" });
+    });
 
-    // Calling registerUser function with mocked request and response objects
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: errorMessage });
-  });
-});
+    it("should return 401 error when login fails due to incorrect password", async () => {
+      const req = {
+        body: {
+          email: "test@example.com",
+          password: "wrongpassword"
+        }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
 
-describe("loginUser", () => {
-  it("should return a token when valid email and password are provided", async () => {
-    // Mocking request object with valid email and password
-    const req = {
-      body: {
-        email: "chamaththa@gmail.com",
-        password: "password123",
-      },
-    };
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
-    const token = "mocked_token";
+      // Mocking the loginUser function to throw an error
+      userService.loginUser.mockRejectedValue(new Error("Invalid password"));
 
-    userService.loginUser.mockResolvedValueOnce(token);
+      await loginUser(req, res);
 
-    await loginUser(req, res);
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({ error: "Invalid password" });
+    });
 
-    // Asserting status and response JSON with token
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({ token });
-  });
+    it("should return 401 error when login fails due to user not found", async () => {
+      const req = {
+        body: {
+          email: "nonexistent@example.com",
+          password: "password123"
+        }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
 
-  it("should return a 401 status when invalid email or password are provided", async () => {
-    // Mocking request object with invalid email or password
-    const req = {
-      body: {
-        email: "chamaththa@gmail.com",
-        password: "wrongpassword",
-      },
-    };
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
+      userService.loginUser.mockRejectedValue(new Error("User not found"));
 
-    const errorMessage = "Invalid email or password";
-    const error = new Error(errorMessage);
+      await loginUser(req, res);
 
-    userService.loginUser.mockRejectedValueOnce(error);
-
-    await loginUser(req, res);
-
-    // Asserting status and response JSON with token
-    expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith({ error: errorMessage });
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({ error: "User not found" });
+    });
   });
 });

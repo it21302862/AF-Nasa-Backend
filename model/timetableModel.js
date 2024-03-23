@@ -15,6 +15,13 @@ const timetableSchema = new mongoose.Schema({
             type:mongoose.Schema.Types.ObjectId,
             ref:'User'
         }
+    }],
+    notifications: [{
+        message: String,
+        timestamp: {
+            type: Date,
+            default: Date.now
+        }
     }]
 });
 

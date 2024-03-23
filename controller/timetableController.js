@@ -13,12 +13,12 @@ const createTimetable = async (req, res, next) => {
 const addSessionToTimetable = async (req, res, next) => {
   try {
     const { timetableId, sessionId, facultyId } = req.body;
-    const timetable = await timeTableService.addSessionToTimetable(
+    const { timetable, notificationMessage } = await timeTableService.addSessionToTimetable(
       timetableId,
       sessionId,
       facultyId
     );
-    res.status(200).json(timetable);
+    res.status(200).json({ timetable, notificationMessage });
   } catch (error) {
     next(error);
   }
@@ -38,16 +38,30 @@ const removeSessionFromtimetable = async (req, res, next) => {
   try {
     const { timetableId, sessionId } = req.params;
 
-    const updatedTimetable = await timeTableService.removeSessionFromtimetable(
+    const { notificationMessage } = await timeTableService.removeSessionFromtimetable(
       timetableId,
       sessionId
     );
 
-    res
-      .status(200)
-      .json([updatedTimetable, "Remove session from timetable successfully"]);
+    res.status(200).json([ "Remove session from timetable successfully" ,notificationMessage ]);
+    // res
+    //   .status(200)
+    //   .json([updatedTimetable, "Remove session from timetable successfully"]);
   } catch (error) {
     next(error);
+  }
+};
+
+
+const getTimetableNotifications = async (req, res, next) => {
+  try {
+      // const courseId = req.params.courseId;
+
+      const notifications = await timeTableService.getTimetableNotifications();
+
+      res.status(200).json(notifications);
+  } catch (error) {
+      next(error);
   }
 };
 
@@ -55,5 +69,5 @@ module.exports = {
   createTimetable,
   addSessionToTimetable,
   getCourseTimetable,
-  removeSessionFromtimetable,
+  removeSessionFromtimetable,getTimetableNotifications
 };

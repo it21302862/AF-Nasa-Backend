@@ -1,11 +1,15 @@
 // service.js
 const bcrypt = require("bcrypt");
-const User = require("../model/User");
+const User = require("../model/UserModel");
 const jwt = require("jsonwebtoken");
 
 // Function to register a new user
-async function registerUser(userData, currentUserRole) {
+async function registerUser(userData) {
   try {
+    const existingUser = await User.findOne({ email: userData.email });
+    if (existingUser) {
+      throw new Error("Email already exists");
+    }
     // Hashing the password using bcrypt
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     const user = new User({
@@ -15,7 +19,7 @@ async function registerUser(userData, currentUserRole) {
       name: userData.name,
       firstName: userData.firstName,
       lastName: userData.lastName,
-      createdDate: new Date(), // Set createdDate to current date and time
+      createdDate: new Date(),
     });
     await user.save();
     return user;
@@ -27,13 +31,11 @@ async function registerUser(userData, currentUserRole) {
 // Function to log in a user
 async function loginUser(email, password) {
   try {
-    // Find the user by email
     const user = await User.findOne({ email });
     if (!user) {
       throw new Error("User not found");
     }
 
-    // Check if the password matches
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new Error("Invalid password");

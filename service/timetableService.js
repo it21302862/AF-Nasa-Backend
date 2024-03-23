@@ -1,6 +1,7 @@
 const Timetable = require("../model/timetableModel");
 const Session = require("../model/sessionModel");
 const Course = require("../model/Course");
+const Notification = require("../model/notificationModel");
 
 const createTimetable = async (timetableData) => {
   try {
@@ -44,8 +45,14 @@ const addSessionToTimetable = async (
       session: sessionId,
       faculty: facultyMemberId,
     });
-    await timetable.save();
-    return timetable;
+  
+
+     // Generate notification message
+     const notificationMessage = `Timetable session added for course ${timetable.courseId}`;
+
+     await Notification.create({ message: notificationMessage, courseId: timetable.courseId });
+
+     return { timetable, notificationMessage };
   } catch (error) {
     throw error;
   }
@@ -105,18 +112,41 @@ const removeSessionFromtimetable = async (timetableId,sessionId) => {
 
     // update isBooked filed to false for session
     await Session.findByIdAndUpdate(sessionId, { isBooked: false });
+    
+    // Generate notification message
+    const notificationMessage = `Timetable session removed for course ${timetable.courseId}`;
 
-    // save updated time table
+    // Update timetable with notification
+    timetable.notifications.push({ message: notificationMessage });
     await timetable.save();
-    return timetable;
+
+    return { timetable, notificationMessage };
   } catch (error) {
     throw error;
   }
 };
 
+const getTimetableNotifications = async () => {
+  try {
+      const timetable = await Timetable.find({});
+
+      if (!timetable) {
+          throw new Error("Timetable not found for the course");
+      }
+
+      // Retrieve notifications from the timetable
+      const notifications = timetable.notifications;
+
+      return notifications;
+  } catch (error) {
+      throw error;
+  }
+};
+
+
 module.exports = {
   createTimetable,
   addSessionToTimetable,
   getCourseTimetable,
-  removeSessionFromtimetable,
+  removeSessionFromtimetable,getTimetableNotifications
 };
