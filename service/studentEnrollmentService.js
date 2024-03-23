@@ -11,7 +11,7 @@ const enrollStudentInCourse = async (studentId,courseId) => {
 
 const getStudentEnrollment = async(studentId) =>{
     try{
-        const enrollment = await StudentEnrollment.findOne({studentId});
+        const enrollment = await StudentEnrollment.find({studentId});
         return enrollment;
     }catch(error){
         throw error;

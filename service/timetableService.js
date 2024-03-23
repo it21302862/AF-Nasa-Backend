@@ -44,8 +44,16 @@ const addSessionToTimetable = async (
       session: sessionId,
       faculty: facultyMemberId,
     });
-    await timetable.save();
-    return timetable;
+  
+
+     // Generate notification message
+     const notificationMessage = `Timetable session added for course ${timetable.courseId}`;
+
+     // Update timetable with notification
+     timetable.notifications.push({ message: notificationMessage });
+     await timetable.save();
+
+     return { timetable, notificationMessage };
   } catch (error) {
     throw error;
   }
@@ -105,18 +113,41 @@ const removeSessionFromtimetable = async (timetableId,sessionId) => {
 
     // update isBooked filed to false for session
     await Session.findByIdAndUpdate(sessionId, { isBooked: false });
+    
+    // Generate notification message
+    const notificationMessage = `Timetable session removed for course ${timetable.courseId}`;
 
-    // save updated time table
+    // Update timetable with notification
+    timetable.notifications.push({ message: notificationMessage });
     await timetable.save();
-    return timetable;
+
+    return { timetable, notificationMessage };
   } catch (error) {
     throw error;
   }
 };
 
+const getTimetableNotifications = async (courseId) => {
+  try {
+      const timetable = await Timetable.findOne({ courseId });
+
+      if (!timetable) {
+          throw new Error("Timetable not found for the course");
+      }
+
+      // Retrieve notifications from the timetable
+      const notifications = timetable.notifications;
+
+      return notifications;
+  } catch (error) {
+      throw error;
+  }
+};
+
+
 module.exports = {
   createTimetable,
   addSessionToTimetable,
   getCourseTimetable,
-  removeSessionFromtimetable,
+  removeSessionFromtimetable,getTimetableNotifications
 };
