@@ -4,13 +4,18 @@ const {
   createTimetable,
   addSessionToTimetable,
   getCourseTimetable,
-  removeSessionFromtimetable,getTimetableNotifications
+  removeSessionFromtimetable,getTimetableNotifications,removeTimetableById
 } = require("../controller/timetableController");
+const verifyToken = require("../middleware/UserMiddleware");
+const AdminAccess = require("../AccessManager/AdminAccess");
+const AllAccess = require("../AccessManager/AllAccess");
 
-router.post("/", createTimetable);
-router.post("/add-session", addSessionToTimetable);
-router.get("/:courseId", getCourseTimetable);
-router.delete("/:timetableId/:sessionId", removeSessionFromtimetable);
-router.get("/notifications/", getTimetableNotifications);
+//route for timetable
+router.post("/",verifyToken,AdminAccess, createTimetable);
+router.post("/add-session",verifyToken,AdminAccess, addSessionToTimetable);
+router.get("/:courseId",verifyToken,AllAccess, getCourseTimetable);
+router.delete("/:timetableId/:sessionId",verifyToken,AdminAccess, removeSessionFromtimetable);
+router.get("/notifications/",verifyToken,AllAccess, getTimetableNotifications);
+router.delete("/:timetableId", verifyToken,AdminAccess, removeTimetableById);
 
 module.exports = router;

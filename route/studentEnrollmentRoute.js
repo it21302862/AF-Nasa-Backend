@@ -4,10 +4,16 @@ const {
   enrollStudentInCourse,
   getAllEnrollmentForCourse,
   getStudentEnrollments,
+  unenrollStudentFromCourse,
 } = require("../controller/studentEnrollmentController");
+const verifyToken = require("../middleware/UserMiddleware");
+const AdminFacultyAccess = require("../AccessManager/AdminFacultyAccess");
+const AllAccess = require("../AccessManager/AllAccess");
 
-router.post("/", enrollStudentInCourse);
-router.get("/student/:studentId", getStudentEnrollments);
-router.get("/course/:courseId", getAllEnrollmentForCourse);
+// route for student enrollement
+router.post("/",verifyToken,AllAccess, enrollStudentInCourse);
+router.get("/student/:studentId",verifyToken,AdminFacultyAccess, getStudentEnrollments);
+router.get("/course/:courseId",verifyToken,AdminFacultyAccess, getAllEnrollmentForCourse);
+router.delete("/:enrollmentId",verifyToken,AdminFacultyAccess, unenrollStudentFromCourse);
 
 module.exports = router;

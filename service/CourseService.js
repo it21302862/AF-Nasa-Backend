@@ -1,5 +1,6 @@
 const Course = require("../model/courseModel");
 const User = require("../model/UserModel");
+const StudentEnrollment = require("../model/studentEnrollmentModel");
 
 // Function to create a new course
 async function createCourse(courseData) {
@@ -61,7 +62,7 @@ async function deleteCourse(courseId) {
 }
 
 // Function to retrieve details of a specific course by ID
-async function getCourseById(courseId) {
+async function getCourseById(courseId, userId, role) {
   try {
     const course = await Course.findById(courseId).populate({
       path: "faculties.faculty",
@@ -70,6 +71,21 @@ async function getCourseById(courseId) {
     if (!course) {
       throw new Error("Course not found");
     }
+
+    // If user is not a student, return course details
+    if (role !== 2) {
+      return course;
+    }
+
+    // For students, check if the student is enrolled in the course
+    const enrollment = await StudentEnrollment.findOne({
+      studentId: userId,
+      courseId: courseId,
+    });
+    if (!enrollment) {
+      throw new Error("You are not enrolled in this course.");
+    }
+
     return course;
   } catch (error) {
     throw error;
