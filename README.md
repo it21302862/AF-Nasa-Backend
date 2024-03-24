@@ -89,3 +89,7 @@ Command - npm test
 
 Directory - assignment-01-Chamaththa123\test\performance_test<br>
 Command - artillery run test.yml
+
+
+### postman Documantaion : 
+https://documenter.getpostman.com/view/29113573/2sA35Bc4hd
