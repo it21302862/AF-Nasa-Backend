@@ -7,7 +7,7 @@ const createTimetable = async (req, res, next) => {
     const timetable = await timeTableService.createTimetable(timetableData);
     res.status(201).json(timetable);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -23,7 +23,7 @@ const addSessionToTimetable = async (req, res, next) => {
       );
     res.status(200).json({ timetable, notificationMessage });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -39,7 +39,7 @@ const getCourseTimetable = async (req, res, next) => {
     );
     res.status(200).json(courseTimetable);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -50,7 +50,7 @@ const removeTimetableById = async (req, res, next) => {
     const result = await timeTableService.removeTimetableById(timetableId);
     res.status(200).json(result);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -69,7 +69,7 @@ const removeSessionFromtimetable = async (req, res, next) => {
         notificationMessage,
       ]);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -80,7 +80,7 @@ const getTimetableNotifications = async (req, res, next) => {
 
     res.status(200).json(notifications);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 

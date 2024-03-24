@@ -7,7 +7,7 @@ const createSession = async (req, res, next) => {
     const session = await sessionService.createSession(sessionData);
     res.status(201).json(session);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -17,7 +17,7 @@ const getAllSessions = async (req, res, next) => {
     const sessions = await sessionService.getAllSessions();
     res.status(200).json(sessions);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -33,7 +33,7 @@ const getSessionByClassRoomId = async (req, res, next) => {
 
     res.status(200).json(sessions);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -43,7 +43,7 @@ const getAvailableSessions = async (req, res, next) => {
     const availableSessions = await sessionService.getAvailableSessions();
     res.status(200).json(availableSessions);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -53,7 +53,7 @@ const getBookedSessions = async (req, res, next) => {
     const bookedSessions = await sessionService.getBookedSessions();
     res.status(200).json(bookedSessions);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -73,7 +73,7 @@ const updateSession = async (req, res, next) => {
 
     res.status(200).json(updatedSession);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -85,7 +85,7 @@ const deleteSession = async (req, res, next) => {
 
     res.status(200).json({ message: "Session removed successfully" });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 

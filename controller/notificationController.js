@@ -1,5 +1,3 @@
-// notificationController.js
-
 const notificationService = require("../service/notificationService");
 
 // Controller function to add an announcement
@@ -12,7 +10,7 @@ const addAnnouncement = async (req, res, next) => {
     });
     res.status(201).json(announcement);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -25,7 +23,7 @@ const removeAnnouncement = async (req, res, next) => {
     );
     res.status(200).json(removedAnnouncement);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -35,7 +33,7 @@ const getAllNotifications = async (req, res, next) => {
     const notifications = await notificationService.getAllNotifications();
     res.status(200).json(notifications);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 

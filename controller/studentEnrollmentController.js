@@ -11,7 +11,7 @@ const enrollStudentInCourse = async (req, res, next) => {
     );
     res.status(201).json(["Enroll for course Succesfully", enrollment]);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -24,7 +24,7 @@ const getStudentEnrollments = async (req, res, next) => {
     );
     res.status(200).json(enrollments);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -36,7 +36,7 @@ const getAllEnrollmentForCourse = async (req, res, next) => {
       await studentEnrollmentService.getAllEnrollmentForCourse(courseId);
     res.status(200).json(enrollments);
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -47,7 +47,7 @@ const unenrollStudentFromCourse = async (req, res, next) => {
     await studentEnrollmentService.unenrollStudentFromCourse(enrollmentId);
     res.status(200).json({ message: "Student unenrolled successfully" });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
