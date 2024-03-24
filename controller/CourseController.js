@@ -26,7 +26,10 @@ async function updateCourse(req, res) {
   try {
     const { courseId } = req.params;
     const updatedCourseData = req.body;
-    const result = await courseService.updateCourse(courseId, updatedCourseData);
+    const result = await courseService.updateCourse(
+      courseId,
+      updatedCourseData
+    );
     res.status(200).json(result.message);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -48,7 +51,9 @@ async function deleteCourse(req, res) {
 async function getCourseById(req, res) {
   try {
     const { courseId } = req.params;
-    const course = await courseService.getCourseById(courseId);
+    const { userId, role } = req.user;
+
+    const course = await courseService.getCourseById(courseId, userId, role);
     res.status(200).json(course);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -59,7 +64,11 @@ async function getCourseById(req, res) {
 async function assignFaculty(req, res) {
   try {
     const { courseId, facultyId, position } = req.body;
-    const result = await courseService.assignFaculty(courseId, facultyId, position);
+    const result = await courseService.assignFaculty(
+      courseId,
+      facultyId,
+      position
+    );
     res.status(200).json(result.message);
   } catch (error) {
     res.status(500).json({ error: error.message });
