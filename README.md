@@ -8,9 +8,13 @@
 
 1. **Clone the repository:**
 
-git clone sliitcsse/assignment-01-Chamaththa123 
+git clone sliitcsse/assignment-01-Chamaththa123
 
 2. **Install dependencies:**
 
-cd assignment-01-Chamaththa123
+cd assignment-01-Chamaththa123<br>
 npm install
+
+2. **Run the application:**
+
+npm start
