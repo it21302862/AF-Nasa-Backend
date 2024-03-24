@@ -2,6 +2,7 @@
 
 const mongoose = require("mongoose");
 
+// Define the schema for notifications
 const notificationSchema = new mongoose.Schema({
   title: {
     type: String,
