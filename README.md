@@ -11,7 +11,7 @@
 ```bash
 git clone sliitcsse/assignment-01-Chamaththa123
 
-Install dependencies:
+2. **Install dependencies:**
 
 cd assignment-01-Chamaththa123
 npm install
