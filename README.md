@@ -8,8 +8,7 @@
 
 1. **Clone the repository:**
 
-```bash
-git clone sliitcsse/assignment-01-Chamaththa123
+git clone sliitcsse/assignment-01-Chamaththa123 
 
 2. **Install dependencies:**
 
