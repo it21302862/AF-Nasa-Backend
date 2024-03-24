@@ -25,5 +25,5 @@ The server will start running on http://localhost:8000/api by default.<br>
 
 ### User Route
 
-POST - /user/register
+POST - /user/register <br>
 POST - /user/login
