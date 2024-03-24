@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// Define the schema for a timetable
 const timetableSchema = new mongoose.Schema({
     courseId:{
         type:mongoose.Schema.Types.ObjectId,
