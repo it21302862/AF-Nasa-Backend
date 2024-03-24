@@ -15,6 +15,15 @@ git clone sliitcsse/assignment-01-Chamaththa123
 cd assignment-01-Chamaththa123<br>
 npm install
 
-2. **Run the application:**
+3. **Run the application:**
 
 npm start
+
+## API Endpoint Documentation
+
+The server will start running on http://localhost:8000/api by default.<br>
+
+### User Route
+
+POST - /user/register
+POST - /user/login
