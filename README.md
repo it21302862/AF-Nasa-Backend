@@ -77,3 +77,15 @@ GET - /timetable/:courseId  (getCourseTimetable)<br>
 GET - /timetable/notifications/  (getTimetableNotifications)<br>
 DELTE  - /timetable/:timetableId/:sessionId (removeSessionFromtimetable)<br>
 DELTE  - /timetable/:timetableId (removeTimetableById)<br>
+
+## Test
+
+### Unit Testing
+
+Directory - assignment-01-Chamaththa123\test\unit_test<br>
+Command - npm test
+
+### Performance Testing
+
+Directory - assignment-01-Chamaththa123\test\performance_test<br>
+Command - artillery run test.yml
