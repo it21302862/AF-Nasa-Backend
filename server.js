@@ -19,13 +19,13 @@ const PORT = process.env.PORT || 8000;
 app.use(express.json());
 
 app.use(bodyParser.json());
-app.use("/api/classroom", classRoomRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/course", courseRoutes);
-app.use("/api/session", sessionRoute);
-app.use("/api/timetable", timetableRoute);
-app.use("/api/enrollment", studentEnrollmentRoute);
-app.use("/api/notification", notificationRoute);
+app.use("/api/classrooms", classRoomRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/courses", courseRoutes);
+app.use("/api/sessions", sessionRoute);
+app.use("/api/timetables", timetableRoute);
+app.use("/api/enrollments", studentEnrollmentRoute);
+app.use("/api/notifications", notificationRoute);
 // Connecting to the database
 connectDB();
 
