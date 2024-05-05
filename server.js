@@ -2,15 +2,18 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const connectDB = require("./db/db");
 require("dotenv").config();
-const classRoomRoutes = require("./route/ClassRoomRoute");
 const userRoutes = require("./route/UserRoute");
-const courseRoutes = require("./route/CourseRoute");
-const sessionRoute = require("./route/sessionRoute");
-const timetableRoute = require("./route/timetableRoute");
-const studentEnrollmentRoute = require("./route/studentEnrollmentRoute");
-const notificationRoute = require("./route/notificationRoute");
+const cors = require("cors");
 // Importing express module
 const app = express();
+
+const corsOptions = {
+  origin: '*', // Allow only requests from this origin
+};
+
+// Use CORS middleware with options
+app.use(cors(corsOptions));
+
 
 // Defining port number
 const PORT = process.env.PORT || 8000;
@@ -19,13 +22,8 @@ const PORT = process.env.PORT || 8000;
 app.use(express.json());
 
 app.use(bodyParser.json());
-app.use("/api/classrooms", classRoomRoutes);
+
 app.use("/api/users", userRoutes);
-app.use("/api/courses", courseRoutes);
-app.use("/api/sessions", sessionRoute);
-app.use("/api/timetables", timetableRoute);
-app.use("/api/enrollments", studentEnrollmentRoute);
-app.use("/api/notifications", notificationRoute);
 // Connecting to the database
 connectDB();
 

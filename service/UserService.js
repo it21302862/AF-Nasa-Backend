@@ -15,7 +15,6 @@ async function registerUser(userData) {
     const user = new User({
       email: userData.email,
       password: hashedPassword,
-      role: userData.role,
       name: userData.name,
       firstName: userData.firstName,
       lastName: userData.lastName,
@@ -48,7 +47,15 @@ async function loginUser(email, password) {
       { expiresIn: "1h" }
     );
 
-    return token;
+    return {
+      token,
+      user: {
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        createdDate: user.createdDate,
+      },
+    };
   } catch (error) {
     throw error;
   }
